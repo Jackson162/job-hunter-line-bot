@@ -34,10 +34,8 @@ const scrapeSearchPage = ($) => {
   return result
 }
 
-
-const scrapeNodejs = async (page) => {
-  const criteriaUrl = '/jobs/search/?ro=1&kwop=7&keyword=nodejs&expansionType=area%2Cspec%2Ccom%2Cjob%2Cwf%2Cwktm&area=6001001000%2C6001002000%2C6001006000&indcat=1001001000&order=11&asc=0&sctp=M&scmin=40000&scstrict=1&scneg=0&page=1&mode=s&jobsource=2018indexpoc'
-  await page.goto(`${baseUrl}${criteriaUrl}`)
+const loadHTML = async (page, url) => {
+  await page.goto(`${baseUrl}${url}`)
   const html = await page.content()
 
   //select element with Cheerio
@@ -45,6 +43,12 @@ const scrapeNodejs = async (page) => {
   const jobsList = scrapeSearchPage($)
   const jobListWithCompanyInfo = await scrapeCompanyPage(jobsList, page)
   return jobListWithCompanyInfo
+}
+
+const scrapeNodejs = async (page) => {
+  const criteriaUrl = '/jobs/search/?ro=1&kwop=7&keyword=nodejs&expansionType=area%2Cspec%2Ccom%2Cjob%2Cwf%2Cwktm&area=6001001000%2C6001002000%2C6001006000&indcat=1001001000&order=11&asc=0&sctp=M&scmin=40000&scstrict=1&scneg=0&page=1&mode=s&jobsource=2018indexpoc'
+  const result = await loadHTML(page, criteriaUrl)
+  return result
 }
 
 const main = async () => {
