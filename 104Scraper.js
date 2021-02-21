@@ -45,8 +45,14 @@ const loadHTML = async (page, url) => {
   return jobListWithCompanyInfo
 }
 
-const scrapeNodejs = async (page) => {
+const scrapeNodejsJobs = async (page) => {
   const criteriaUrl = '/jobs/search/?ro=1&kwop=7&keyword=nodejs&expansionType=area%2Cspec%2Ccom%2Cjob%2Cwf%2Cwktm&area=6001001000%2C6001002000%2C6001006000&indcat=1001001000&order=11&asc=0&sctp=M&scmin=40000&scstrict=1&scneg=0&page=1&mode=s&jobsource=2018indexpoc'
+  const result = await loadHTML(page, criteriaUrl)
+  return result
+}
+
+const scrapeBackendJobs = async (page) => {
+  const criteriaUrl = '/jobs/search/?ro=1&kwop=7&keyword=backend&expansionType=area%2Cspec%2Ccom%2Cjob%2Cwf%2Cwktm&area=6001001000%2C6001002000%2C6001006000&indcat=1001001000&order=11&asc=0&sctp=M&scmin=40000&scstrict=1&scneg=0&page=1&mode=s&jobsource=2018indexpoc'
   const result = await loadHTML(page, criteriaUrl)
   return result
 }
@@ -54,8 +60,11 @@ const scrapeNodejs = async (page) => {
 const main = async () => {
   const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage() //new Page instance
-  const nodejsJobs = await scrapeNodejs(page) //add await when call any async function
-  console.log('nodejsJobs', nodejsJobs)
+  const nodejsJobs = await scrapeNodejsJobs(page) //add await when call any async function
+  const backendJobs = await scrapeBackendJobs(page)
+  console.log('nodejsJobs: ', nodejsJobs)
+  console.log('===============')
+  console.log('backendJobs: ', backendJobs)
 }
 
 main()
