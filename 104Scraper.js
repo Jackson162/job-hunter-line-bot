@@ -13,7 +13,7 @@ const scrapeCompanyPage = async (dataList, page) => {
     const $ = cheerio.load(html)
     const header = $('div.header')
     dataList[i].companyAddress = header.attr('address')
-    dataList[i].companyIntro = header.attr('profile')
+    dataList[i].companyIntro = header.attr('profile').substring(0, 50)
     await sleep(2000)
   }
   return dataList
@@ -57,15 +57,15 @@ const scrapeBackendJobs = async (page) => {
   return result
 }
 
-const main = async () => {
+const run104Scraper = async () => {
   const browser = await puppeteer.launch({ headless: false })
   const page = await browser.newPage() //new Page instance
   const nodejsJobs = await scrapeNodejsJobs(page) //add await when call any async function
   const backendJobs = await scrapeBackendJobs(page)
-  console.log('nodejsJobs: ', nodejsJobs)
-  console.log('===============')
-  console.log('backendJobs: ', backendJobs)
+  return { nodejsJobs, backendJobs }
+  // console.log('nodejsJobs: ', nodejsJobs)
+  // console.log('===============')
+  // console.log('backendJobs: ', backendJobs)
 }
 
-main()
-
+module.exports = run104Scraper
