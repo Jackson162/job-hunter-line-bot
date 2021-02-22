@@ -3,6 +3,7 @@ if (process.env.NODE_ENV !== 'production') {
 }
 const run104Scraper = require('./104Scraper')
 const line = require('@line/bot-sdk')
+
 const client = new line.Client({
   channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
 })
@@ -12,12 +13,22 @@ const promise104 = new Promise(async (resolve, reject) => {
   return resolve(resultFrom104)
 })
 
-
 promise104.then(result => {
-  console.log(result.nodejsJobs.slice(0, 2))
+  const all104Jobs = result.nodejsJobs.concat(result.backendJobs)
+  let jobStr = `104人力網\nNode.js 工作: \n\n`
+  all104Jobs.map((job, index)=> {
+    if (index === 10) jobStr += `________________________________\nbackend 工作:\n\n`
+    jobStr += `職稱: ${job.jobName} 
+日期: ${job.date}
+公司: ${job.companyName}
+薪水: ${job.salary}
+工作地址: ${job.workAddress}
+公司簡介: ${job.companyIntro}...。
+職缺連結: ${job.recruitmentUrl} \n\n`
+  })                         
   const message = {
     type: 'text',
-    text: `${JSON.stringify(result.nodejsJobs.slice(0, 2))}`
+    text: `${jobStr}`
   }
 
   client.pushMessage(process.env.USER_ID, message)

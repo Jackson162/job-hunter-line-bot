@@ -13,7 +13,7 @@ const scrapeCompanyPage = async (dataList, page) => {
     const $ = cheerio.load(html)
     const header = $('div.header')
     dataList[i].companyAddress = header.attr('address')
-    dataList[i].companyIntro = header.attr('profile').substring(0, 50)
+    dataList[i].companyIntro = header.attr('profile').substring(0, 50) //node -v > 15.0.0 support replaceAll
     await sleep(2000)
   }
   return dataList
