@@ -12,9 +12,10 @@ const scrapeCompanyPage = async (dataList, page) => {
     const html = await page.content()
     const $ = cheerio.load(html)
     const header = $('div.header')
-    dataList[i].companyAddress = header.attr('address')
-    dataList[i].companyIntro = header.attr('profile').substring(0, 50) //node -v > 15.0.0 support replaceAll
-    await sleep(2000)
+    //sometimes company data below is undefined, but header exists
+    dataList[i].companyAddress = header.attr('address') ? header.attr('address') : null
+    dataList[i].companyIntro = header.attr('profile') ? header.attr('profile').substring(0, 50) : null //node -v > 15.0.0 support replaceAll
+    await sleep(1000)
   }
   return dataList
 }
@@ -62,10 +63,7 @@ const run104Scraper = async () => {
   const page = await browser.newPage() //new Page instance
   const nodejsJobs = await scrapeNodejsJobs(page) //add await when call any async function
   const backendJobs = await scrapeBackendJobs(page)
-  return { nodejsJobs, backendJobs }
-  // console.log('nodejsJobs: ', nodejsJobs)
-  // console.log('===============')
-  // console.log('backendJobs: ', backendJobs)
+  return {  nodejsJobs, backendJobs }
 }
 
 module.exports = run104Scraper
