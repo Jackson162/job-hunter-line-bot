@@ -30,6 +30,7 @@ app.post('/webhook', async (req, res) => {
 
     //reply based on the text send by user
     const text = event.message.text.trim()
+    res.json(event) //response before scraping, no return
 
     if (text === '104') {
       const jobStr104 = await run104Scraper()
@@ -46,8 +47,6 @@ app.post('/webhook', async (req, res) => {
       }
       await client.replyMessage(replyToken, reminder).catch((err) => console.error(err))
     }
-    return res.json(event)
-
 })
 
 app.use((err, req, res, next) => {
