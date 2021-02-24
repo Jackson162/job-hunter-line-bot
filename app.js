@@ -5,21 +5,10 @@ const config = require('./config/line')
 const run104Scraper = require('./scrapers/104Scraper')
 
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT
 const client = new line.Client(config)
 
 app.use(line.middleware(config))
-
-app.use((err, req, res, next) => {
-  if (err instanceof line.SignatureValidationFailed) {
-    res.status(401).send(err.signature)
-    return
-  } else if (err instanceof line.JSONParseError) {
-    res.status(400).send(err.raw)
-    return
-  }
-  next(err) // will throw default 500
-})
 
 app.post('/webhook', async (req, res) => {
 
@@ -60,6 +49,18 @@ app.post('/webhook', async (req, res) => {
     return res.json(event)
 
 })
+
+app.use((err, req, res, next) => {
+  if (err instanceof line.SignatureValidationFailed) {
+    res.status(401).send(err.signature)
+    return
+  } else if (err instanceof line.JSONParseError) {
+    res.status(400).send(err.raw)
+    return
+  }
+  next(err) // will throw default 500
+})
+
 
 app.listen(PORT, () => {
   console.log(`This server is now listening to http://localhost:${PORT}.`)
