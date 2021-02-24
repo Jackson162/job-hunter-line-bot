@@ -1,13 +1,7 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
-const run104Scraper = require('../scrapers/104Scraper')
 const line = require('@line/bot-sdk')
+const run104Scraper = require('../scrapers/104Scraper')
+const config = require('../config/line')
 
-const config = {
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-  channelSecret: process.env.CHANNEL_SECRET
-}
 const client = new line.Client(config)
 
 const promise104 = new Promise(async (resolve, reject) => {
@@ -22,12 +16,7 @@ promise104.then(async jobStr104 => {
   }
 
   await client.pushMessage(process.env.USER_ID, message)
-    .then(() => {
-      console.log('message sent!')
-    })
-    .catch((err) => {
-      console.error(err)
-    })
+    .catch((err) => console.error(err))
   
   process.exit()
 })

@@ -1,16 +1,11 @@
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-}
-const run104Scraper = require('./scrapers/104Scraper')
 const line = require('@line/bot-sdk')
 const express = require('express')
-const app = express()
 
+const config = require('./config/line')
+const run104Scraper = require('./scrapers/104Scraper')
+
+const app = express()
 const PORT = 3000
-const config = {
-  channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN,
-  channelSecret: process.env.CHANNEL_SECRET
-}
 const client = new line.Client(config)
 
 app.use(line.middleware(config))
@@ -46,7 +41,7 @@ app.post('/webhook', async (req, res) => {
 
     //reply based on the text send by user
     const text = event.message.text.trim()
-    console.log(event)
+
     if (text === '104') {
       const jobStr104 = await run104Scraper()
       const message = {
@@ -54,8 +49,7 @@ app.post('/webhook', async (req, res) => {
         text: `${jobStr104}`
       }
       //replyMessage() does not work after waiting over 30s, no time to scrape
-      await client.pushMessage(process.env.USER_ID, message) 
-
+      await client.pushMessage(process.env.USER_ID, message)     
     } else {
       const reminder = {
         type: 'text',
