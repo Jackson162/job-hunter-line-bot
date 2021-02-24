@@ -66,4 +66,23 @@ const run104Scraper = async () => {
   return {  nodejsJobs, backendJobs }
 }
 
-module.exports = run104Scraper
+const convertDataToStr = async () => {
+  const data = await run104Scraper()
+  const all104Jobs = data.nodejsJobs.concat(data.backendJobs)
+  let jobStr = `104人力網\nNode.js 工作: \n\n`
+  all104Jobs.map((job, index)=> {
+    if (index === 10) jobStr += `____________________________________\nbackend 工作:\n\n`
+
+    jobStr += `職稱: ${job.jobName} 
+日期: ${job.date}
+公司: ${job.companyName}
+薪水: ${job.salary}
+工作地址: ${job.workAddress}
+公司簡介: ${job.companyIntro}...。
+職缺連結: ${job.recruitmentUrl}\n\n`
+  })  
+  
+  return jobStr
+}
+
+module.exports = convertDataToStr
