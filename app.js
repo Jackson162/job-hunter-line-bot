@@ -22,7 +22,7 @@ app.use((err, req, res, next) => {
 })
 
 app.post('/webhook', async (req, res) => {
-  try {
+
     const event = req.body.events[0]
     //webhook URL verification 
     if (!event) return res.json({ event: 'webhook URL verification', webhookUrlVerified: true })
@@ -35,7 +35,7 @@ app.post('/webhook', async (req, res) => {
         type: 'text',
         text: '只能輸入文字，例如: 104。'
       }
-      await client.replyMessage(replyToken, reminder)
+      await client.replyMessage(replyToken, reminder).then(() => console.log('err')).catch((err) => console.error(err))
       return res.json({ replyMessage: '只能輸入文字，例如: 104。', receivedMessageType })
     }
 
@@ -49,18 +49,16 @@ app.post('/webhook', async (req, res) => {
         text: `${jobStr104}`
       }
       //replyMessage() does not work after waiting over 30s, no time to scrape
-      await client.pushMessage(process.env.USER_ID, message)     
+      await client.pushMessage(process.env.USER_ID, message).catch((err) => console.error(err))
     } else {
       const reminder = {
         type: 'text',
         text: `"${text}"是無效輸入，請輸入: 104。`
       }
-      await client.replyMessage(replyToken, reminder)
+      await client.replyMessage(replyToken, reminder).catch((err) => console.error(err))
     }
     return res.json(event)
-  } catch(err) {
-    console.error(err)
-  }
+
 })
 
 app.listen(PORT, () => {
