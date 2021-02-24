@@ -53,7 +53,7 @@ app.post('/webhook', async (req, res) => {
         type: 'text',
         text: `${jobStr104}`
       }
-      //replyMessage does not work after waiting over 30s, no time to scrape
+      //replyMessage() does not work after waiting over 30s, no time to scrape
       await client.pushMessage(process.env.USER_ID, message) 
 
     } else {
