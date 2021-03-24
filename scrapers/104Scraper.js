@@ -60,7 +60,7 @@ const scrapeBackendJobs = async (page) => {
 
 const run104Scraper = async () => {
   const browser = await puppeteer.launch({ 
-    headless: true, 
+    headless: false, 
     args: ['--no-sandbox', '--disable-setuid-sandbox'] 
   })
   const page = await browser.newPage() //new Page instance
@@ -81,8 +81,8 @@ const convertDataToStr = async () => {
 公司: ${job.companyName}
 薪水: ${job.salary}
 工作地址: ${job.workAddress}
-公司簡介: ${job.companyIntro}...。
-職缺連結: ${job.recruitmentUrl}\n\n`
+公司簡介: ${job.companyIntro}...。\n\n`
+// 職缺連結: ${job.recruitmentUrl}\n\n (URLs consist of over 5000 characters)
   })  
   
   return jobStr

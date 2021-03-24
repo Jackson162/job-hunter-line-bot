@@ -10,8 +10,11 @@ const client = new line.Client(config)
 
 app.use(line.middleware(config))
 
-app.post('/webhook', async (req, res) => {
+app.get('/', (req, res) => {
+  return res.json('Server starts!!!')
+})
 
+app.post('/webhook', async (req, res) => {
     const event = req.body.events[0]
     //webhook URL verification 
     if (!event) return res.json({ event: 'webhook URL verification', webhookUrlVerified: true })
@@ -34,12 +37,20 @@ app.post('/webhook', async (req, res) => {
 
     if (text === '104') {
       const jobStr104 = await run104Scraper()
-      const message = {
+      let message = {
         type: 'text',
         text: `${jobStr104}`
       }
+      console.log('total characters(need to be less than 5000): ', jobStr104.length)
+      if (jobStr104.length > 5000) {
+        message = {
+          type: 'text',
+          text: `訊息總字元數: ${jobStr104.length}，必須低於 5000!!!`
+        }
+        return client.pushMessage(process.env.USER_ID, message).catch((err) => console.error(err))
+      }
       //replyMessage() does not work after waiting over 30s, no time to scrape
-      await client.pushMessage(process.env.USER_ID, message).catch((err) => console.error(err))
+      await client.pushMessage(process.env.USER_ID, message).catch((err) => console.error(err.originalError.response.data))
     } else {
       const reminder = {
         type: 'text',
