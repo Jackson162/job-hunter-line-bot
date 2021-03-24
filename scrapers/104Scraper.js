@@ -60,7 +60,7 @@ const scrapeBackendJobs = async (page) => {
 
 const run104Scraper = async () => {
   const browser = await puppeteer.launch({ 
-    headless: false, 
+    headless: true, 
     args: ['--no-sandbox', '--disable-setuid-sandbox'] 
   })
   const page = await browser.newPage() //new Page instance
